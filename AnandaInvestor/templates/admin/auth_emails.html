@@ -1,0 +1,69 @@
+{% extends 'admin/layout.html' %}
+
+{% block admin %}
+<div class="jumbotron p-3">
+  <h2>Authorized emails <button type="button" class="btn btn-success float-right"
+                data-toggle="modal" data-target="#emailmodal">Add New Email</button></h2>
+  <table class="table table-striped table-dark table-sm table-hover">
+    <thead>
+      <tr class="admin">
+        <th scope="col">id</th>
+        <th scope="col">Email</th>
+        <th scope="col">Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for email in emails %}
+      <tr>
+        <th scope="row">{{ email.id }}</th>
+        <td>{{ email.email }}</td>
+        <td><a href="{{ url_for('admin.delete_auth_emails', id=email.id) }}" class="btn btn-danger btn-xs"
+               onclick="return confirm('Are you sure to delete?')">Delete</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+    <div id="emailmodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add Employee</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="">
+                              {{ form.hidden_tag() }}
+                              <fieldset class="form-group">
+                                  <div class="form-group">
+                                      {{ form.email.label(class="form-control-label") }}
+                                      {% if form.email.errors %}
+                                      {{ form.email(class="form-control form-control-lg is-invalid") }}
+                                      <div class="invalid-feedback">
+                                          {% for error in form.email.errors %}
+                                          <span>{{ error }}</span>
+                                          {% endfor %}
+                                      </div>
+                                      {% else %}
+                                      {{ form.email(class="form-control form-control-lg") }}
+                                      {% endif %}
+                                  </div>
+                                  <div class="form-group">
+                                      {{ form.submit(class="btn btn-outline-info") }}
+                                  </div>
+
+                              </fieldset>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+  </div>
+
+
+
+{% endblock admin %}

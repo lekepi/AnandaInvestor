@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Site Under Maintenance</title>
+    <style>
+      body {
+        background-color: #f1f1f1;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+      }
+      #wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+      p {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper" style="text-align:center;">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Ananda Logo">
+      <h1>Site Under Maintenance</h1>
+      <p>We're sorry, but our website is currently undergoing maintenance. Please check back soon!</p>
+      <p>If you have any questions or concerns, please email us at <a href="mailto:olivier@ananda.com">olivier@ananda.com</a>.</p>
+    </div>
+  </body>
+</html>

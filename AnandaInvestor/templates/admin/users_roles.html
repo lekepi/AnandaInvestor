@@ -1,0 +1,50 @@
+{% extends 'admin/layout.html' %}
+
+{% block admin %}
+<h2 class="top_page_title">< Roles for {{ user.first_name}} {{ user.last_name}}</h2>
+
+<table class="table table-striped table-dark table-sm table-hover">
+    <thead>
+    <tr  class="admin">
+        <th scope="col">id</th>
+        <th scope="col">Role</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for role in user.roles %}
+    <tr>
+        <th scope="row">{{ role.id }}</th>
+        <td>{{ role.name }}</td>
+        <td><a href="{{ url_for('admin.delete_user_role',user_id=user.id, role_id=role.id) }}" class="btn btn-danger btn-xs"
+               onclick="return confirm('Are you sure to delete?')">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+        <div class="form-group">
+            {{ form.role.label(class="form-control-label") }}
+            {% if form.role.errors %}
+            {{ form.role(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.role.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.role(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+
+    </fieldset>
+</form>
+
+{% endblock admin %}

@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html' %}
+
+{% block admin %}
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+        <div class="form-group">
+            {{ form.change_user.label(class="form-control-label") }}
+            {% if form.change_user.errors %}
+            {{ form.change_user(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.change_user.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.change_user(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+
+    </fieldset>
+</form>
+
+{% endblock admin %}
