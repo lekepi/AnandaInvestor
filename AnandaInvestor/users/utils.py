@@ -23,7 +23,7 @@ def save_picture(form_picture):
 def send_reset_email(user):
     token = user.get_reset_token()
     msg = Message('Ananda - Password To Join Webinar', sender='ananda.am.system@gmail.com', recipients=[user.email])
-    msg.body = f'''To set up your password visit the following link:
+    msg.body = f'''Please click on the following link:
 {url_for('users.reset_token', token=token, _external=True)}
     '''
     # _external=True to get absolute URL

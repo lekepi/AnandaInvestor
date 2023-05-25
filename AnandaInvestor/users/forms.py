@@ -13,7 +13,7 @@ class RegistrationForm(FlaskForm):
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     investor_type = BooleanField('I hereby confirm that I am a qualified institutional or a qualified individual investor (*).', validators=[DataRequired()])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Register')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
@@ -23,7 +23,6 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Log In')
 

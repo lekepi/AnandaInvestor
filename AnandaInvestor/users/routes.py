@@ -45,7 +45,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(first_name=form.first_name.data, last_name=form.last_name.data,
-                    email=form.email.data, password="xxx")
+                    email=form.email.data)
 
         my_text = f"The user {user.first_name} {user.last_name} ({user.email}) registered into Ananda Website"
         send_activity_email(my_text)
@@ -59,7 +59,7 @@ def register():
         db.session.commit()
 
         send_reset_email(user)
-        flash(f'Your account has been created. An email has been sent to {user.email} with instructions to set up your password.', 'info')
+        flash(f'Your account has been created. An email has been sent to {user.email} to confirm your identity.', 'info')
 
         return redirect(url_for('users.notification'))
     return render_template('users/register.html', title='Register', form=form)
@@ -73,28 +73,18 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            if user.password_try <= 0:
-                flash('login locked, please contact IT to reset your account', 'danger')
-            elif bcrypt.check_password_hash(user.password, form.password.data):
-                user.password_try = 5
-                db.session.commit()
-                # login_user(user, remember=form.remember.data)
-                login_user(user, remember=False)
-                identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+            login_user(user, remember=False)
+            identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
 
-                logging_text = f'{user.first_name} {user.last_name} {user.email} logged in'
-                add_log(logging_text)
-                my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
-                send_activity_email(my_text)
-                new_user_activity = UserActivity(user_id=user.id, action='Login')
-                db.session.add(new_user_activity)
-                db.session.commit()
-                next_page = request.args.get('next')  # will be none if not there
-                return redirect(next_page) if next_page else redirect(url_for('main.home'))
-            else:  # wrong password
-                user.password_try -= 1
-                db.session.commit()
-                flash(f'login unsuccessful, wrong password password, {user.password_try} tries left', 'danger')
+            logging_text = f'{user.first_name} {user.last_name} {user.email} logged in'
+            add_log(logging_text)
+            my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
+            send_activity_email(my_text)
+            new_user_activity = UserActivity(user_id=user.id, action='Login')
+            db.session.add(new_user_activity)
+            db.session.commit()
+            next_page = request.args.get('next')  # will be none if not there
+            return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
             flash('login unsuccessful, this email does not exist', 'danger')
     return render_template('users/login.html', title='Login', form=form)
@@ -151,16 +141,7 @@ def reset_token(token):
     if user is None:  # if not user
         flash('That is an invalid or expired token', 'warning')
         return redirect(url_for('users.reset_request'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user.password = hashed_password
-        new_auth_email = AuthEmails(email=user.email)
-        db.session.add(new_auth_email)
-        new_user_activity = UserActivity(user_id=user.id, action='Email Validation')
-        db.session.add(new_user_activity)
-        db.session.commit()
-
+    else:
         logout_user()
         identity_changed.send(current_app, identity=AnonymousIdentity())
         login_user(user, remember=False)
@@ -169,8 +150,6 @@ def reset_token(token):
         my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
         send_activity_email(my_text)
         return redirect(url_for('main.webinar', start_time=0))
-
-    return render_template('users/reset_token.html', title='Reset password', form=form)
 
 
 @users.route('/maintenance/')
