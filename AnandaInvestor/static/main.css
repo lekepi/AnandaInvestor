@@ -10,6 +10,11 @@ h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
 
+video {
+    width: 80%; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
 .buy_color {
   background-color: #55B26A;
 }

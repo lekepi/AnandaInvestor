@@ -30,3 +30,9 @@ If you did not make this request simply ignore this email
     '''
     # _external=True to get absolute URL
     mail.send(msg)
+
+
+def send_activity_email(user, activity):
+    my_text = f"The user {user.first_name} {user.last_name} {user.email} {activity}"
+    msg = Message(my_text, sender='ananda.am.system@gmail.com', recipients=['olivier@ananda-am.com'])
+    mail.send(msg)

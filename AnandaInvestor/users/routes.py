@@ -8,6 +8,8 @@ from AnandaInvestor.users.utils import save_picture, send_reset_email
 from flask_principal import Identity, AnonymousIdentity, identity_changed, \
     identity_loaded, UserNeed, RoleNeed
 from AnandaInvestor.admin.utils import add_log
+from AnandaInvestor.users.utils import send_activity_email
+
 
 users = Blueprint('users', __name__)
 
@@ -45,6 +47,11 @@ def register():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(first_name=form.first_name.data, last_name=form.last_name.data,
                     email=form.email.data, password=hashed_password)
+
+        send_activity_email(user, 'registered')
+        logging_text = f'{user.first_name} {user.last_name} {user.email} registered'
+        add_log(logging_text)
+
         db.session.add(user)
         db.session.commit()
         flash(f'Your account has been created, you are now able to login', 'success')
@@ -69,8 +76,9 @@ def login():
                 login_user(user, remember=False)
                 identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
 
-                logging_text = f'{user.first_name} {user.last_name} logged in'
+                logging_text = f'{user.first_name} {user.last_name} {user.email} logged in'
                 add_log(logging_text)
+                send_activity_email(user, 'logged in')
                 new_user_activity = UserActivity(user_id=user.id)
                 db.session.add(new_user_activity)
                 db.session.commit()

@@ -2,11 +2,11 @@
 
 {% block content %}
     <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 bg-dark px-0 full_left_menu">
+        <div class="col-auto col-md-2 col-xl-2 px-sm-2 bg-dark px-0 full_left_menu">
             <div class="d-flex flex-column px-3 pt-2 text-white min-vh-100">
-                <a href="#" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <!-- <a href="#" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <span class="menu_title">Home</span>
-                </a>
+                </a> -->
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     <li class="nav-item">
                         <a href="{{url_for('main.home')}}" class="text-white left_menu">
@@ -15,10 +15,9 @@
                     </li>
                 </ul>
                 <hr>
-
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             {% block main %}
             {% endblock main %}
         </div>
