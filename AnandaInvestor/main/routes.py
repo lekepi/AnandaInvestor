@@ -20,8 +20,9 @@ def home():
     return render_template('main/home.html', image_file=image_file)
 
 
-@main.route('/webinar')
+@main.route('/webinar/<int:start_time>')
 @login_required
-def webinar():
+def webinar(start_time):
     video_url = url_for('static', filename='videos/Ananda Webinar 23-05-2023.mp4')
-    return render_template('main/webinar.html', title='Webinar', video_url=video_url)
+    video_url_with_time = f'{video_url}?start={start_time}'
+    return render_template('main/webinar.html', title='Webinar', video_url=video_url_with_time)

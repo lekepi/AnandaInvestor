@@ -22,8 +22,8 @@ def save_picture(form_picture):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Password Reset Request', sender='ananda.am.system@gmail.com', recipients=[user.email])
-    msg.body = f'''To reset your password visit the following link:
+    msg = Message('Ananda - Password Request', sender='ananda.am.system@gmail.com', recipients=[user.email])
+    msg.body = f'''To set up your password visit the following link:
 {url_for('users.reset_token', token=token, _external=True)}
 
 If you did not make this request simply ignore this email
@@ -32,8 +32,7 @@ If you did not make this request simply ignore this email
     mail.send(msg)
 
 
-def send_activity_email(user, activity):
-    my_text = f"The user {user.first_name} {user.last_name} {user.email} {activity} into the Investor Website"
+def send_activity_email(my_text):
     mail_to = current_app.config['ML_CONNECT']
     msg = Message(my_text, sender='ananda.am.system@gmail.com', recipients=[mail_to])
     mail.send(msg)

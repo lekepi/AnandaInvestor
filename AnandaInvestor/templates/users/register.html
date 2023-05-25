@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="content-section">
+<div class="container">
+    <div class="jumbotron p-3">
     <form method="POST" action="">
         {{ form.hidden_tag() }} <!-- add the csrf token using secret key -->
         <fieldset class="form-group">
@@ -46,36 +47,28 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                {{ form.password.label(class="form-control-label") }}
-                {% if form.password.errors %}
-                    {{ form.password(class="form-control form-control-lg is-invalid") }}
+                {{ form.investor_type.label(class="form-control-label") }}
+                {% if form.investor_type.errors %}
+                    {{ form.investor_type(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.password.errors %}
+                        {% for error in form.investor_type.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.password(class="form-control form-control-lg") }}
+                    {{ form.investor_type(class="form-control form-control-sm") }}
                 {% endif %}
+                <small class="text-muted ml-2">
+                    <div>(*) Defined as an institution with assets under discretionary management of more than US$5 million and/or an individual with a joint net worth with spouse of more than US$1 million</div>
+                </small>
             </div>
-            <div class="form-group">
-                {{ form.confirm_password.label(class="form-control-label") }}
-                {% if form.confirm_password.errors %}
-                    {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.confirm_password.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.confirm_password(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
+        </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
-        </fieldset>
-    </form>
+
+        </form>
+
 </div>
 <div class="border-top pt-3">
     <small class="text-muted">
@@ -83,4 +76,5 @@
             <!-- url_for is using the function, not the template -->
     </small>
 </div>
+        </div>
 {% endblock content %}

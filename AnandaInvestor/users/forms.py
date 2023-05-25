@@ -12,15 +12,13 @@ class RegistrationForm(FlaskForm):
     last_name = StringField('Last Name',
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
+    investor_type = BooleanField('I hereby confirm that I am a qualified institutional or a qualified individual investor (*).', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError('That email is taken. Please choose a different one.')
+            raise ValidationError('That email is taken. Please choose a different one. If you need to reset your password, please click the "Forgot Password" link in the Login tab above.')
 
 
 class LoginForm(FlaskForm):
@@ -28,6 +26,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Log In')
+
+    def validate_email(self, email):
+        email = AuthEmails.query.filter_by(email=email.data).first()
+        if email is None:
+            raise ValidationError('That email has not been authorized.')
 
 
 class UpdateAccountForm(FlaskForm):
@@ -61,4 +64,4 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Reset Password')
+    submit = SubmitField('Create Password')

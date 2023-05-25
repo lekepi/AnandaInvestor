@@ -72,6 +72,7 @@ class UserActivity(db.Model):
     user_id = db.Column(db.ForeignKey("user.id"), nullable=False)
     user = db.relationship("User")
     date_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    action = db.Column(db.String(45), nullable=False)
 
 
 class NameValue(db.Model):

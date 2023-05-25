@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint,
 from AnandaInvestor import db, bcrypt
 from AnandaInvestor.users.forms import RegistrationForm, LoginForm, UpdateAccountForm,\
     RequestResetForm, ResetPasswordForm
-from AnandaInvestor.models import User, UserActivity
+from AnandaInvestor.models import User, UserActivity, AuthEmails
 from flask_login import login_user, current_user, logout_user, login_required
 from AnandaInvestor.users.utils import save_picture, send_reset_email
 from flask_principal import Identity, AnonymousIdentity, identity_changed, \
@@ -44,18 +44,24 @@ def register():
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(first_name=form.first_name.data, last_name=form.last_name.data,
-                    email=form.email.data, password=hashed_password)
+                    email=form.email.data, password="xxx")
 
-        send_activity_email(user, 'registered')
+        my_text = f"The user {user.first_name} {user.last_name} ({user.email}) registered into Ananda Website"
+        send_activity_email(my_text)
+        new_user_activity = UserActivity(user_id=user.id, action='Register')
+        db.session.add(new_user_activity)
+        db.session.commit()
         logging_text = f'{user.first_name} {user.last_name} {user.email} registered'
         add_log(logging_text)
 
         db.session.add(user)
         db.session.commit()
-        flash(f'Your account has been created, you are now able to login', 'success')
-        return redirect(url_for('users.login'))
+
+        send_reset_email(user)
+        flash(f'Your account has been created. An email has been sent to {user.email} with instructions to set up your password.', 'info')
+
+        return redirect(url_for('users.notification'))
     return render_template('users/register.html', title='Register', form=form)
 
 
@@ -78,8 +84,9 @@ def login():
 
                 logging_text = f'{user.first_name} {user.last_name} {user.email} logged in'
                 add_log(logging_text)
-                send_activity_email(user, 'logged in')
-                new_user_activity = UserActivity(user_id=user.id)
+                my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
+                send_activity_email(my_text)
+                new_user_activity = UserActivity(user_id=user.id, action='Login')
                 db.session.add(new_user_activity)
                 db.session.commit()
                 next_page = request.args.get('next')  # will be none if not there
@@ -112,7 +119,7 @@ def account():
         current_user.last_name = form.last_name.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('your account has been update', 'success')
+        flash('your account has been updateD', 'success')
         return redirect(url_for('users.account'))  # need to redirect to have a get request this time
     elif request.method == 'GET':
         form.first_name.data = current_user.first_name
@@ -131,7 +138,7 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('an email has been sent with instructions to reset your password.', 'info')
+        flash(f'An email has been sent to {user.email} with instructions to reset your password.', 'info')
         return redirect(url_for('users.login'))
     return render_template('users/reset_request.html', title='Reset password', form=form)
 
@@ -148,12 +155,29 @@ def reset_token(token):
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hashed_password
+        new_auth_email = AuthEmails(email=user.email)
+        db.session.add(new_auth_email)
+        my_text = f"The user {user.first_name} {user.last_name} ({user.email}) validated his email address"
+        send_activity_email(my_text)
+        new_user_activity = UserActivity(user_id=user.id, action='Email Validation')
+        db.session.add(new_user_activity)
         db.session.commit()
-        flash(f'Your password has been updated, you are now able to login', 'success')
-        return redirect(url_for('users.login'))
+
+        logout_user()
+        identity_changed.send(current_app, identity=AnonymousIdentity())
+        login_user(user, remember=False)
+        identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+        flash(f'Your password has been updated. You are now logged in.', 'success')
+        return redirect(url_for('main.webinar', start_time=0))
+
     return render_template('users/reset_token.html', title='Reset password', form=form)
 
 
 @users.route('/maintenance/')
 def maintenance():
     return render_template('users/maintenance.html', title='Maintenance')
+
+
+@users.route('/notification/')
+def notification():
+    return render_template('users/notification.html')
