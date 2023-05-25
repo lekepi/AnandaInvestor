@@ -33,7 +33,7 @@ If you did not make this request simply ignore this email
 
 
 def send_activity_email(user, activity):
-    my_text = f"The user {user.first_name} {user.last_name} {user.email} {activity}"
+    my_text = f"The user {user.first_name} {user.last_name} {user.email} {activity} into the Investor Website"
     mail_to = current_app.config['ML_CONNECT']
     msg = Message(my_text, sender='ananda.am.system@gmail.com', recipients=[mail_to])
     mail.send(msg)
