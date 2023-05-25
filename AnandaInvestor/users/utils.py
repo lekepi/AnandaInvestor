@@ -22,11 +22,9 @@ def save_picture(form_picture):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Ananda - Password Request', sender='ananda.am.system@gmail.com', recipients=[user.email])
+    msg = Message('Ananda - Password To Join Webinar', sender='ananda.am.system@gmail.com', recipients=[user.email])
     msg.body = f'''To set up your password visit the following link:
 {url_for('users.reset_token', token=token, _external=True)}
-
-If you did not make this request simply ignore this email
     '''
     # _external=True to get absolute URL
     mail.send(msg)
@@ -34,5 +32,6 @@ If you did not make this request simply ignore this email
 
 def send_activity_email(my_text):
     mail_to = current_app.config['ML_CONNECT']
-    msg = Message(my_text, sender='ananda.am.system@gmail.com', recipients=[mail_to])
+    mail_list = mail_to.split(',')
+    msg = Message(my_text, sender='ananda.am.system@gmail.com', recipients=mail_list)
     mail.send(msg)

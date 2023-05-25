@@ -38,7 +38,7 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(RoleNeed(role.name))
 
 
-@users.route('/register', methods=['GET', 'POST'])
+@users.route('/webinar', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
@@ -157,8 +157,6 @@ def reset_token(token):
         user.password = hashed_password
         new_auth_email = AuthEmails(email=user.email)
         db.session.add(new_auth_email)
-        my_text = f"The user {user.first_name} {user.last_name} ({user.email}) validated his email address"
-        send_activity_email(my_text)
         new_user_activity = UserActivity(user_id=user.id, action='Email Validation')
         db.session.add(new_user_activity)
         db.session.commit()
@@ -168,6 +166,8 @@ def reset_token(token):
         login_user(user, remember=False)
         identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
         flash(f'Your password has been updated. You are now logged in.', 'success')
+        my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
+        send_activity_email(my_text)
         return redirect(url_for('main.webinar', start_time=0))
 
     return render_template('users/reset_token.html', title='Reset password', form=form)
