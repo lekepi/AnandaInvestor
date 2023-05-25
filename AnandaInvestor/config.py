@@ -25,4 +25,5 @@ class ConfigDefault:
         MAIL_PASSWORD = cryptocode.decrypt(MAIL_PASSWORD_ENCRYPTED, SECRET_KEY)
         APPLICATION_TYPE = 'PROD'
         MAINTENANCE_MODE = config['OTHER']['MAINTENANCE_MODE']
+        ML_CONNECT = config['EMAIL']['ML_CONNECT']
 
