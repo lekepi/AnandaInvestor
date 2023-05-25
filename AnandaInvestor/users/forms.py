@@ -18,18 +18,13 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError('That email is taken. Please choose a different one. If you need to reset your password, please click the "Forgot Password" link in the Login tab above.')
+            raise ValidationError('That email is taken. If you are already registered, click on the login button above.')
 
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Log In')
-
-    def validate_email(self, email):
-        email = AuthEmails.query.filter_by(email=email.data).first()
-        if email is None:
-            raise ValidationError('That email has not been authorized.')
 
 
 class UpdateAccountForm(FlaskForm):

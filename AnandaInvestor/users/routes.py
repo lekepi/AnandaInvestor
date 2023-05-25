@@ -83,8 +83,7 @@ def login():
             new_user_activity = UserActivity(user_id=user.id, action='Login')
             db.session.add(new_user_activity)
             db.session.commit()
-            next_page = request.args.get('next')  # will be none if not there
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            return redirect(url_for('main.webinar', start_time=0))
         else:
             flash('login unsuccessful, this email does not exist', 'danger')
     return render_template('users/login.html', title='Login', form=form)
@@ -146,7 +145,6 @@ def reset_token(token):
         identity_changed.send(current_app, identity=AnonymousIdentity())
         login_user(user, remember=False)
         identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-        flash(f'Your password has been updated. You are now logged in.', 'success')
         my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
         send_activity_email(my_text)
         return redirect(url_for('main.webinar', start_time=0))
