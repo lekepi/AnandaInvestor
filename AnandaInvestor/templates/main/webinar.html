@@ -2,14 +2,23 @@
 
 {% block main %}
 
-<h2 class="top_page_title"> < Webinar</h2>
-    <container>
-            <video controls style="width: 80%; height: auto;">
-                <source src="{{ video_url }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-    </container>
+<div class="container">
+    <h2 class="top_page_title"> < Webinar</h2>
 
+    <video controls style="width: 100%; height: auto;">
+        <source src="{{ video_url }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+
+    <br/><br/>
+    <div style="font-size: small"><b>Ananda Asset Management - 207 Sloane Street, Knightsbridge, London SW1X 9QX, UK - Email: info@ananda-am.com</b></div>
+    <div style="font-size: small"><b>Ananda is authorised and regulated by the UK Financial Conduct Authority under # 924813.</b></div>
+    <br/>
+    <div style="font-size: x-small"><b><u>Disclaimer</u></b></div>
+    <div style="font-size: x-small"><b>Investments in these programs involve a substantial amount of risk, including loss of capital. This website is only intended for qualified institutional and qualified individual investors. It does not constitute an offer to sell nor a solicitation of an offer to buy interests described herein. </b></div>
+
+</div>
 {% endblock main %}
 
 
