@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary='user_roles',
                             backref=db.backref('users', lazy='dynamic'))
 
-    def get_reset_token(self, expires_sec=1800):
+    def get_reset_token(self, expires_sec=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
 

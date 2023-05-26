@@ -41,7 +41,7 @@ def on_identity_loaded(sender, identity):
 @users.route('/webinar', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.webinar', start_time=0))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(first_name=form.first_name.data, last_name=form.last_name.data,
@@ -68,7 +68,7 @@ def register():
 @users.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.webinar', start_time=0))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -122,7 +122,7 @@ def account():
 @users.route('/reset_password', methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.webinar', start_time=0))
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -135,7 +135,7 @@ def reset_request():
 @users.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_token(token):
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.webinar', start_time=0))
     user = User.verify_reset_token(token)
     if user is None:  # if not user
         flash('That is an invalid or expired token', 'warning')
