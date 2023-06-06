@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, current_app
+from flask import Blueprint, render_template, url_for, current_app, redirect
 from flask_login import login_required
 
 
@@ -16,6 +16,7 @@ def check_under_maintenance():
 @main.route('/')
 @login_required
 def home():
+    return redirect(url_for('main.webinar', start_time=0))
     image_file = url_for('static', filename='ananda.JPG')
     return render_template('main/home.html', image_file=image_file)
 

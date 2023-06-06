@@ -49,13 +49,15 @@ def register():
 
         my_text = f"The user {user.first_name} {user.last_name} ({user.email}) registered into Ananda Website"
         send_activity_email(my_text)
-        new_user_activity = UserActivity(user_id=user.id, action='Register')
-        db.session.add(new_user_activity)
-        db.session.commit()
+
         logging_text = f'{user.first_name} {user.last_name} {user.email} registered'
         add_log(logging_text)
 
         db.session.add(user)
+        db.session.commit()
+
+        new_user_activity = UserActivity(user_id=user.id, action='Register')
+        db.session.add(new_user_activity)
         db.session.commit()
 
         send_reset_email(user)
@@ -85,7 +87,7 @@ def login():
             db.session.commit()
             return redirect(url_for('main.webinar', start_time=0))
         else:
-            flash('login unsuccessful, this email does not exist', 'danger')
+            flash("login unsuccessful, this email does not exist. You can register by clicking on 'Sign Up Now' below", 'danger')
     return render_template('users/login.html', title='Login', form=form)
 
 
@@ -147,6 +149,9 @@ def reset_token(token):
         identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
         my_text = f"The user {user.first_name} {user.last_name} ({user.email}) logged in into Ananda Website"
         send_activity_email(my_text)
+        new_user_activity = UserActivity(user_id=user.id, action='Login')
+        db.session.add(new_user_activity)
+        db.session.commit()
         return redirect(url_for('main.webinar', start_time=0))
 
 
